@@ -1,0 +1,65 @@
+@page {
+  size: auto !important;
+}
+
+.page-wrap {
+  margin: 20px;
+}
+
+.map {
+  min-height: 500px;
+  max-width: 1200px;
+}
+
+.marker {
+  font-size: 10px !important;
+  padding-top: 2px !important;
+  padding-left: 1px !important;
+  padding-right: 1px !important;
+  padding-bottom: 1px !important;
+  font-weight: bold;
+  background-color: white;
+  border: solid black 1px;
+  width: auto !important;
+  min-width: 15px !important;
+  text-align: center;
+}
+
+.cluster-0 {
+  color: #e6194b !important;
+}
+
+.cluster-1 {
+  color: #3cb44b !important;
+}
+
+.cluster-2 {
+  color: #911eb4 !important;
+}
+
+.cluster-3 {
+  color: #4363d8 !important;
+}
+
+.cluster-4 {
+  color: #f58231 !important;
+}
+
+.page-break {
+  page-break-after: always;
+}
+
+.success {
+  border-right: solid #58c458 3px !important;
+}
+
+.warning {
+  border-right: solid #d39c48 3px !important;
+}
+
+@media print {
+  .no-print,
+  .no-print * {
+    display: none !important;
+  }
+}
