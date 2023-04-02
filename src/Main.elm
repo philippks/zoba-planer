@@ -597,7 +597,6 @@ Indem du auf eine der Bestellung klickst, kannst du diese einer anderen Route zu
                         [ layout [] <|
                             row [ spacing 10 ]
                                 [ UI.secondaryButton { onPress = Just (BackTo <| ClusterDeliveries Nothing), label = text "Zurück" }
-                                , UI.primaryButton { onPress = Just SubmitClusters, label = text "Weiter" }
                                 ]
                         ]
                     ]
