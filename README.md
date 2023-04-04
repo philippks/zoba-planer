@@ -10,7 +10,7 @@ high quality and lacks tests and translations.
 
 ## Access
 
-Access the web application here: [URL to web application]
+Access the web application here: https://philippks.github.io/zoba-planer/
 
 Example data is hardcoded. Replace it as needed.
 
