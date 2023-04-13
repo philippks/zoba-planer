@@ -24,9 +24,10 @@ app.ports.initMap.subscribe(function (headquarter) {
 });
 
 app.ports.clearMap.subscribe(function () {
-  if(map) {
-    map.off()
-    map.remove()
+  if (map) {
+    map.off();
+    map.remove();
+    map = null;
   }
 });
 
