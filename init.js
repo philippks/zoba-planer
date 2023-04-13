@@ -13,9 +13,9 @@ app.ports.setCachedCoordinates.subscribe(function (cachedCoordinates) {
   localStorage.setItem("cachedCoordinates", JSON.stringify(cachedCoordinates));
 });
 
-app.ports.initMap.subscribe(function () {
+app.ports.initMap.subscribe(function (headquarter) {
   setTimeout(function () {
-    map = L.map("map", {scrollWheelZoom: false}).setView([47.25229, 8.77175], 17);
+    map = L.map("map", { scrollWheelZoom: false }).setView([headquarter.latitude, headquarter.longitude], 17);
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',

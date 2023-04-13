@@ -7679,7 +7679,16 @@ var $author$project$Delivery$encodeDeliveriesToCsv = F2(
 var $author$project$Main$initMap = _Platform_outgoingPort(
 	'initMap',
 	function ($) {
-		return $elm$json$Json$Encode$null;
+		return $elm$json$Json$Encode$object(
+			_List_fromArray(
+				[
+					_Utils_Tuple2(
+					'latitude',
+					$elm$json$Json$Encode$float($.latitude)),
+					_Utils_Tuple2(
+					'longitude',
+					$elm$json$Json$Encode$float($.longitude))
+				]));
 	});
 var $author$project$Main$initRenderRouteMaps = _Platform_outgoingPort(
 	'initRenderRouteMaps',
@@ -8450,7 +8459,7 @@ var $author$project$Main$update = F2(
 								deliveries: A2($author$project$Delivery$clusterDeliveries, model.drivers, model.deliveries),
 								progress: $author$project$Main$ClusterDeliveries($elm$core$Maybe$Nothing)
 							}),
-						$author$project$Main$initMap(_Utils_Tuple0));
+						$author$project$Main$initMap(model.headquarterCoordinates));
 				case 'SlotButtonClicked':
 					var slot = msg.a;
 					var $temp$msg = $author$project$Main$AddMarkers(
@@ -8474,7 +8483,7 @@ var $author$project$Main$update = F2(
 							{progress: progress}),
 						function () {
 							if (progress.$ === 'ClusterDeliveries') {
-								return $author$project$Main$initMap(_Utils_Tuple0);
+								return $author$project$Main$initMap(model.headquarterCoordinates);
 							} else {
 								return $author$project$Main$clearMap(_Utils_Tuple0);
 							}
@@ -17035,7 +17044,7 @@ var $author$project$Main$view = function (model) {
 													_List_Nil,
 													_List_fromArray(
 														[
-															$mdgriffith$elm_ui$Element$text('Erfasse als erstes die Bestellungen im CSV Format.')
+															$mdgriffith$elm_ui$Element$text('Erfasse als Erstes die Bestellungen im CSV Format.')
 														])),
 													A2(
 													$mdgriffith$elm_ui$Element$paragraph,

@@ -129,7 +129,7 @@ subscriptions _ =
 port setCachedCoordinates : List ( String, ( String, Coordinates ) ) -> Cmd msg
 
 
-port initMap : () -> Cmd msg
+port initMap : (Coordinates) -> Cmd msg
 
 
 port clearMap : () -> Cmd msg
@@ -320,7 +320,7 @@ update msg model =
                     )
 
         StartClustering ->
-            ( { model | progress = ClusterDeliveries Nothing, deliveries = clusterDeliveries model.drivers model.deliveries }, initMap () )
+            ( { model | progress = ClusterDeliveries Nothing, deliveries = clusterDeliveries model.drivers model.deliveries }, initMap (model.headquarterCoordinates) )
 
         SlotButtonClicked slot ->
             update
@@ -335,7 +335,7 @@ update msg model =
             ( { model | progress = progress }
             , case progress of
                 ClusterDeliveries _ ->
-                    initMap ()
+                    initMap (model.headquarterCoordinates)
 
                 _ ->
                     clearMap ()
