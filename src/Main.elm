@@ -466,7 +466,7 @@ view model =
                         [ el [ width fill, Element.Region.heading 1, Font.size 48 ] (text "Bestellungen erfassen")
                         , info <|
                             column [ spacing 20 ]
-                                [ paragraph [] [ text "Erfasse als erstes die Bestellungen im CSV Format." ]
+                                [ paragraph [] [ text "Erfasse als Erstes die Bestellungen im CSV Format." ]
                                 , paragraph [] [ text """Wichtig ist, dass die Spalten "Strasse", "Ort" und "Lieferzeit" vorhanden sind. Weitere Spalten können frei gewählt werden, wobei diese dann auf den finalen Routen für Fahrer sein werden (z.B. "Telefonnummer", "Bemerkungen", etc).""" ]
                                 ]
                         , Input.multiline []
