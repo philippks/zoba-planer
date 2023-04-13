@@ -37,19 +37,19 @@ app.ports.initRenderRouteMaps.subscribe(function (values) {
 
   const renderSlotClusterMap = (slot, cluster, deliveries) => {
     const headquarterMarker = L.marker([headquarter.latitude, headquarter.longitude]);
-    const mapKey = "map-" + slot.replaceAll(' ', '') + "-cluster-" + cluster
-    console.log("init map with key: " + mapKey)
-    console.log("cluster: ", cluster)
-    console.log("deliveries: ", deliveries)
-    const slotClusterMap = L.map(mapKey, {scrollWheelZoom: false});
+    const mapKey = "map-" + slot.replaceAll(" ", "") + "-cluster-" + cluster;
+    console.log("init map with key: " + mapKey);
+    console.log("cluster: ", cluster);
+    console.log("deliveries: ", deliveries);
+    const slotClusterMap = L.map(mapKey, { scrollWheelZoom: false });
 
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(slotClusterMap);
 
     const deliveryMarkers = deliveries.map((delivery) => {
-      const id = delivery[0]
-      const coordinates = delivery[1]
+      const id = delivery[0];
+      const coordinates = delivery[1];
 
       const icon = L.divIcon({ className: "marker " + "cluster-" + cluster, html: id });
 
