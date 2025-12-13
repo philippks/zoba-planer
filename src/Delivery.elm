@@ -215,11 +215,11 @@ decodeCsvRecordToDelivery headers lineNumber record =
             Err ("Strasse fehlt - Linie " ++ lineNumberString)
 
 
-decodeCsvToDeliveries : String -> Result String ( List String, List Delivery )
-decodeCsvToDeliveries rawCsv =
+decodeCsvToDeliveries : String -> String -> Result String ( List String, List Delivery )
+decodeCsvToDeliveries separator rawCsv =
     let
         csv =
-            Csv.parse rawCsv
+            Csv.parseWith separator rawCsv
 
         deliveries =
             List.indexedMap (decodeCsvRecordToDelivery csv.headers) csv.records

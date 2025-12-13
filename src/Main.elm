@@ -30,6 +30,7 @@ main =
 
 type alias Model =
     { drivers : Int
+    , csvSeparator : String
     , inputCsv : String
     , parsedCsvHeaders : List String
     , deliveries : Deliveries
@@ -66,6 +67,9 @@ type AddMarkersMode
 init : List ( String, ( String, Coordinates ) ) -> ( Model, Cmd Msg )
 init cachedCoordinatesList =
     let
+        separator =
+            ","
+
         input =
             """Name,Strasse,Ort,Lieferzeit
 "Max Mustermann","Mythenweg 21","Hombrechtikon","08:00 - 09:00"
@@ -101,6 +105,7 @@ init cachedCoordinatesList =
             Coordinates 47.25229 8.77175
     in
     ( Model drivers
+        separator
         input
         []
         Dict.empty
@@ -129,7 +134,7 @@ subscriptions _ =
 port setCachedCoordinates : List ( String, ( String, Coordinates ) ) -> Cmd msg
 
 
-port initMap : (Coordinates) -> Cmd msg
+port initMap : Coordinates -> Cmd msg
 
 
 port clearMap : () -> Cmd msg
@@ -150,6 +155,7 @@ port markerClicked : (Int -> msg) -> Sub msg
 
 type Msg
     = InputCsv String
+    | CsvSeparatorChanged String
     | SubmitCsv
     | QueryOsm Delivery
     | GotOsmResponse Delivery OsmQueryResult
@@ -175,8 +181,11 @@ update msg model =
         InputCsv inputCsv ->
             ( { model | inputCsv = inputCsv, parseCsvError = Nothing }, Cmd.none )
 
+        CsvSeparatorChanged separator ->
+            ( { model | csvSeparator = separator, parseCsvError = Nothing }, Cmd.none )
+
         SubmitCsv ->
-            case decodeCsvToDeliveries model.inputCsv of
+            case decodeCsvToDeliveries model.csvSeparator model.inputCsv of
                 Err error ->
                     ( { model | parseCsvError = Just ("Fehler in der Eingabe:\n" ++ error) }, Cmd.none )
 
@@ -320,7 +329,7 @@ update msg model =
                     )
 
         StartClustering ->
-            ( { model | progress = ClusterDeliveries Nothing, deliveries = clusterDeliveries model.drivers model.deliveries }, initMap (model.headquarterCoordinates) )
+            ( { model | progress = ClusterDeliveries Nothing, deliveries = clusterDeliveries model.drivers model.deliveries }, initMap model.headquarterCoordinates )
 
         SlotButtonClicked slot ->
             update
@@ -335,7 +344,7 @@ update msg model =
             ( { model | progress = progress }
             , case progress of
                 ClusterDeliveries _ ->
-                    initMap (model.headquarterCoordinates)
+                    initMap model.headquarterCoordinates
 
                 _ ->
                     clearMap ()
@@ -475,6 +484,16 @@ view model =
                             , onChange = InputCsv
                             , placeholder = Nothing
                             , spellcheck = False
+                            }
+                        , Input.radioRow
+                            [ spacing 16 ]
+                            { selected = Just model.csvSeparator
+                            , onChange = \new -> CsvSeparatorChanged new
+                            , label = Input.labelLeft [ paddingEach { top = 0, left = 0, right = 20, bottom = 0 } ] (text "CSV Separator")
+                            , options =
+                                [ Input.option "," (text ",")
+                                , Input.option ";" (text ";")
+                                ]
                             }
                         , case model.parseCsvError of
                             Just errors ->

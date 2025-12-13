@@ -5605,16 +5605,18 @@ var $author$project$Delivery$Coordinates = F2(
 	});
 var $author$project$Main$Input = {$: 'Input'};
 var $author$project$Main$Model = function (drivers) {
-	return function (inputCsv) {
-		return function (parsedCsvHeaders) {
-			return function (deliveries) {
-				return function (parseCsvError) {
-					return function (progress) {
-						return function (cachedCoordinates) {
-							return function (headquarterCoordinates) {
-								return function (headquarterCoordinatesString) {
-									return function (headquarterCoordinatesError) {
-										return {cachedCoordinates: cachedCoordinates, deliveries: deliveries, drivers: drivers, headquarterCoordinates: headquarterCoordinates, headquarterCoordinatesError: headquarterCoordinatesError, headquarterCoordinatesString: headquarterCoordinatesString, inputCsv: inputCsv, parseCsvError: parseCsvError, parsedCsvHeaders: parsedCsvHeaders, progress: progress};
+	return function (csvSeparator) {
+		return function (inputCsv) {
+			return function (parsedCsvHeaders) {
+				return function (deliveries) {
+					return function (parseCsvError) {
+						return function (progress) {
+							return function (cachedCoordinates) {
+								return function (headquarterCoordinates) {
+									return function (headquarterCoordinatesString) {
+										return function (headquarterCoordinatesError) {
+											return {cachedCoordinates: cachedCoordinates, csvSeparator: csvSeparator, deliveries: deliveries, drivers: drivers, headquarterCoordinates: headquarterCoordinates, headquarterCoordinatesError: headquarterCoordinatesError, headquarterCoordinatesString: headquarterCoordinatesString, inputCsv: inputCsv, parseCsvError: parseCsvError, parsedCsvHeaders: parsedCsvHeaders, progress: progress};
+										};
 									};
 								};
 							};
@@ -5751,12 +5753,13 @@ var $elm$core$Dict$fromList = function (assocs) {
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Main$init = function (cachedCoordinatesList) {
+	var separator = ',';
 	var input = 'Name,Strasse,Ort,Lieferzeit\n"Max Mustermann","Mythenweg 21","Hombrechtikon","08:00 - 09:00"\n"Franz Müller","Baugartenstr. 13","Hombrechtikon","08:00 - 09:00"\n"Heike Koller","Haldenweg 7","Hombrechtikon","08:00 - 09:00"\n"Anja Kraner","Waffenplatzstr. 41","Hombrechtikon","08:00 - 09:00"\n"Jimmy Meier","Etzelstr. 15","Hombrechtikon","08:00 - 09:00"\n"Philipp Karrer","Glärnischstr. 20","Hombrechtikon","08:00 - 09:00"\n"Monika Lausbacher","Holgassstrasse 62","Hombrechtikon","08:00 - 09:00"\n"Heinrich Freier","Quellenweg 15","Hombrechtikon","08:00 - 09:00"\n"Holger Bering","Breitacherstrasse 3","Hombrechtikon","08:00 - 09:00"\n"Markus Günter","Bochslenstrasse 2","Hombrechtikon","09:00 - 10:00"\n"Erika Andre","Eichwisstrasse 39","Hombrechtikon","09:00 - 10:00"\n"Eberhardt Zirme B.A.","Bahnhofstrasse 4","Feldbach","09:00 - 10:00"\n"Silva Stumpf","Hornstrasse 3","Feldbach","09:00 - 10:00"\n"Prof. Walfried Hübel B.A.","Hinderschlatt 4","Hombrechtikon","09:00 - 10:00"\n"Woldemar Bachmann","Blumenbergweg 5","Wolfhausen","09:00 - 10:00"\n"Milena Dippel","Oetwilerstrasse 35","Hombrechtikon","09:00 - 10:00"\n"Renato Kohl","Holflüestrasse 8","Hombrechtikon","09:00 - 10:00"\n"Leonid Bähr","Holflüestrasse 10","Hombrechtikon","09:00 - 10:00"\n"Samir Tschentscher","Bochslenstrasse 34","Hombrechtikon","09:00 - 10:00"\n"Prof. Eckehard Köhler","Haldenweg 10","Hombrechtikon","10:00 - 11:00"\n"Thorsten Paffrath","Tödistrasse 5","Hombrechtikon","10:00 - 11:00"\n';
 	var headquarterCoordinates = A2($author$project$Delivery$Coordinates, 47.25229, 8.77175);
 	var drivers = 3;
 	var cachedCoordinates = $elm$core$Dict$fromList(cachedCoordinatesList);
 	return _Utils_Tuple2(
-		$author$project$Main$Model(drivers)(input)(_List_Nil)($elm$core$Dict$empty)($elm$core$Maybe$Nothing)($author$project$Main$Input)(cachedCoordinates)(headquarterCoordinates)('47.25229,8.77175')($elm$core$Maybe$Nothing),
+		$author$project$Main$Model(drivers)(separator)(input)(_List_Nil)($elm$core$Dict$empty)($elm$core$Maybe$Nothing)($author$project$Main$Input)(cachedCoordinates)(headquarterCoordinates)('47.25229,8.77175')($elm$core$Maybe$Nothing),
 		$elm$core$Platform$Cmd$none);
 };
 var $elm$json$Json$Decode$list = _Json_decodeList;
@@ -7558,46 +7561,46 @@ var $lovasoa$elm_csv$Csv$parseWith = F2(
 			$elm$core$List$head(values));
 		return {headers: headers, records: records};
 	});
-var $lovasoa$elm_csv$Csv$parse = $lovasoa$elm_csv$Csv$parseWith(',');
-var $author$project$Delivery$decodeCsvToDeliveries = function (rawCsv) {
-	var csv = $lovasoa$elm_csv$Csv$parse(rawCsv);
-	var deliveries = A2(
-		$elm$core$List$indexedMap,
-		$author$project$Delivery$decodeCsvRecordToDelivery(csv.headers),
-		csv.records);
-	return A2($elm$core$List$any, $elm_community$result_extra$Result$Extra$isErr, deliveries) ? $elm$core$Result$Err(
-		A2(
-			$elm$core$String$join,
-			'\n',
-			A3(
-				$elm$core$List$foldl,
-				F2(
-					function (deliveryResult, acc) {
-						if (deliveryResult.$ === 'Ok') {
-							return acc;
-						} else {
-							var error = deliveryResult.a;
-							return A2($elm$core$List$cons, error, acc);
-						}
-					}),
-				_List_Nil,
-				deliveries))) : $elm$core$Result$Ok(
-		_Utils_Tuple2(
-			csv.headers,
-			A3(
-				$elm$core$List$foldl,
-				F2(
-					function (deliveryResult, acc) {
-						if (deliveryResult.$ === 'Ok') {
-							var delivery = deliveryResult.a;
-							return A2($elm$core$List$cons, delivery, acc);
-						} else {
-							return acc;
-						}
-					}),
-				_List_Nil,
-				deliveries)));
-};
+var $author$project$Delivery$decodeCsvToDeliveries = F2(
+	function (separator, rawCsv) {
+		var csv = A2($lovasoa$elm_csv$Csv$parseWith, separator, rawCsv);
+		var deliveries = A2(
+			$elm$core$List$indexedMap,
+			$author$project$Delivery$decodeCsvRecordToDelivery(csv.headers),
+			csv.records);
+		return A2($elm$core$List$any, $elm_community$result_extra$Result$Extra$isErr, deliveries) ? $elm$core$Result$Err(
+			A2(
+				$elm$core$String$join,
+				'\n',
+				A3(
+					$elm$core$List$foldl,
+					F2(
+						function (deliveryResult, acc) {
+							if (deliveryResult.$ === 'Ok') {
+								return acc;
+							} else {
+								var error = deliveryResult.a;
+								return A2($elm$core$List$cons, error, acc);
+							}
+						}),
+					_List_Nil,
+					deliveries))) : $elm$core$Result$Ok(
+			_Utils_Tuple2(
+				csv.headers,
+				A3(
+					$elm$core$List$foldl,
+					F2(
+						function (deliveryResult, acc) {
+							if (deliveryResult.$ === 'Ok') {
+								var delivery = deliveryResult.a;
+								return A2($elm$core$List$cons, delivery, acc);
+							} else {
+								return acc;
+							}
+						}),
+					_List_Nil,
+					deliveries)));
+	});
 var $author$project$Delivery$deliveriesCoordinates = function (deliveries) {
 	return A3(
 		$elm$core$List$foldl,
@@ -8227,8 +8230,15 @@ var $author$project$Main$update = F2(
 							model,
 							{inputCsv: inputCsv, parseCsvError: $elm$core$Maybe$Nothing}),
 						$elm$core$Platform$Cmd$none);
+				case 'CsvSeparatorChanged':
+					var separator = msg.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{csvSeparator: separator, parseCsvError: $elm$core$Maybe$Nothing}),
+						$elm$core$Platform$Cmd$none);
 				case 'SubmitCsv':
-					var _v1 = $author$project$Delivery$decodeCsvToDeliveries(model.inputCsv);
+					var _v1 = A2($author$project$Delivery$decodeCsvToDeliveries, model.csvSeparator, model.inputCsv);
 					if (_v1.$ === 'Err') {
 						var error = _v1.a;
 						return _Utils_Tuple2(
@@ -8603,6 +8613,9 @@ var $author$project$Main$update = F2(
 	});
 var $author$project$Main$BackTo = function (a) {
 	return {$: 'BackTo', a: a};
+};
+var $author$project$Main$CsvSeparatorChanged = function (a) {
+	return {$: 'CsvSeparatorChanged', a: a};
 };
 var $author$project$Main$DownloadDeliveriesCsv = {$: 'DownloadDeliveriesCsv'};
 var $author$project$Main$InputCsv = function (a) {
@@ -14513,6 +14526,8 @@ var $mdgriffith$elm_ui$Element$Input$HiddenLabel = function (a) {
 	return {$: 'HiddenLabel', a: a};
 };
 var $mdgriffith$elm_ui$Element$Input$labelHidden = $mdgriffith$elm_ui$Element$Input$HiddenLabel;
+var $mdgriffith$elm_ui$Element$Input$OnLeft = {$: 'OnLeft'};
+var $mdgriffith$elm_ui$Element$Input$labelLeft = $mdgriffith$elm_ui$Element$Input$Label($mdgriffith$elm_ui$Element$Input$OnLeft);
 var $mdgriffith$elm_ui$Internal$Model$OnlyDynamic = F2(
 	function (a, b) {
 		return {$: 'OnlyDynamic', a: a, b: b};
@@ -15723,6 +15738,85 @@ var $mdgriffith$elm_ui$Element$newTabLink = F2(
 	});
 var $mdgriffith$elm_ui$Internal$Model$Empty = {$: 'Empty'};
 var $mdgriffith$elm_ui$Element$none = $mdgriffith$elm_ui$Internal$Model$Empty;
+var $mdgriffith$elm_ui$Element$Input$Option = F2(
+	function (a, b) {
+		return {$: 'Option', a: a, b: b};
+	});
+var $mdgriffith$elm_ui$Internal$Model$AlignX = function (a) {
+	return {$: 'AlignX', a: a};
+};
+var $mdgriffith$elm_ui$Internal$Model$Left = {$: 'Left'};
+var $mdgriffith$elm_ui$Element$alignLeft = $mdgriffith$elm_ui$Internal$Model$AlignX($mdgriffith$elm_ui$Internal$Model$Left);
+var $mdgriffith$elm_ui$Element$Input$defaultRadioOption = F2(
+	function (optionLabel, status) {
+		return A2(
+			$mdgriffith$elm_ui$Element$row,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$spacing(10),
+					$mdgriffith$elm_ui$Element$alignLeft,
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink)
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$mdgriffith$elm_ui$Element$el,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$width(
+							$mdgriffith$elm_ui$Element$px(14)),
+							$mdgriffith$elm_ui$Element$height(
+							$mdgriffith$elm_ui$Element$px(14)),
+							$mdgriffith$elm_ui$Element$Background$color($mdgriffith$elm_ui$Element$Input$white),
+							$mdgriffith$elm_ui$Element$Border$rounded(7),
+							function () {
+							if (status.$ === 'Selected') {
+								return $mdgriffith$elm_ui$Internal$Model$htmlClass('focusable');
+							} else {
+								return $mdgriffith$elm_ui$Internal$Model$NoAttribute;
+							}
+						}(),
+							$mdgriffith$elm_ui$Element$Border$width(
+							function () {
+								switch (status.$) {
+									case 'Idle':
+										return 1;
+									case 'Focused':
+										return 1;
+									default:
+										return 5;
+								}
+							}()),
+							$mdgriffith$elm_ui$Element$Border$color(
+							function () {
+								switch (status.$) {
+									case 'Idle':
+										return A3($mdgriffith$elm_ui$Element$rgb, 208 / 255, 208 / 255, 208 / 255);
+									case 'Focused':
+										return A3($mdgriffith$elm_ui$Element$rgb, 208 / 255, 208 / 255, 208 / 255);
+									default:
+										return A3($mdgriffith$elm_ui$Element$rgb, 59 / 255, 153 / 255, 252 / 255);
+								}
+							}())
+						]),
+					$mdgriffith$elm_ui$Element$none),
+					A2(
+					$mdgriffith$elm_ui$Element$el,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+							$mdgriffith$elm_ui$Internal$Model$htmlClass('unfocusable')
+						]),
+					optionLabel)
+				]));
+	});
+var $mdgriffith$elm_ui$Element$Input$option = F2(
+	function (val, txt) {
+		return A2(
+			$mdgriffith$elm_ui$Element$Input$Option,
+			val,
+			$mdgriffith$elm_ui$Element$Input$defaultRadioOption(txt));
+	});
 var $mdgriffith$elm_ui$Internal$Model$Paragraph = {$: 'Paragraph'};
 var $mdgriffith$elm_ui$Element$paragraph = F2(
 	function (attrs, children) {
@@ -15874,6 +15968,314 @@ var $author$project$UI$primaryButton = $mdgriffith$elm_ui$Element$Input$button(
 			$mdgriffith$elm_ui$Element$padding(15),
 			$mdgriffith$elm_ui$Element$Border$rounded(5)
 		]));
+var $mdgriffith$elm_ui$Element$Input$Row = {$: 'Row'};
+var $mdgriffith$elm_ui$Element$Input$AfterFound = {$: 'AfterFound'};
+var $mdgriffith$elm_ui$Element$Input$BeforeFound = {$: 'BeforeFound'};
+var $mdgriffith$elm_ui$Element$Input$Idle = {$: 'Idle'};
+var $mdgriffith$elm_ui$Element$Input$NotFound = {$: 'NotFound'};
+var $mdgriffith$elm_ui$Element$Input$Selected = {$: 'Selected'};
+var $mdgriffith$elm_ui$Element$Input$column = F2(
+	function (attributes, children) {
+		return A4(
+			$mdgriffith$elm_ui$Internal$Model$element,
+			$mdgriffith$elm_ui$Internal$Model$asColumn,
+			$mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
+				A2(
+					$elm$core$List$cons,
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+					attributes)),
+			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
+	});
+var $mdgriffith$elm_ui$Element$Input$downArrow = 'ArrowDown';
+var $mdgriffith$elm_ui$Internal$Model$filter = function (attrs) {
+	return A3(
+		$elm$core$List$foldr,
+		F2(
+			function (x, _v0) {
+				var found = _v0.a;
+				var has = _v0.b;
+				switch (x.$) {
+					case 'NoAttribute':
+						return _Utils_Tuple2(found, has);
+					case 'Class':
+						var key = x.a;
+						return _Utils_Tuple2(
+							A2($elm$core$List$cons, x, found),
+							has);
+					case 'Attr':
+						var attr = x.a;
+						return _Utils_Tuple2(
+							A2($elm$core$List$cons, x, found),
+							has);
+					case 'StyleClass':
+						var style = x.b;
+						return _Utils_Tuple2(
+							A2($elm$core$List$cons, x, found),
+							has);
+					case 'Width':
+						var width = x.a;
+						return A2($elm$core$Set$member, 'width', has) ? _Utils_Tuple2(found, has) : _Utils_Tuple2(
+							A2($elm$core$List$cons, x, found),
+							A2($elm$core$Set$insert, 'width', has));
+					case 'Height':
+						var height = x.a;
+						return A2($elm$core$Set$member, 'height', has) ? _Utils_Tuple2(found, has) : _Utils_Tuple2(
+							A2($elm$core$List$cons, x, found),
+							A2($elm$core$Set$insert, 'height', has));
+					case 'Describe':
+						var description = x.a;
+						return A2($elm$core$Set$member, 'described', has) ? _Utils_Tuple2(found, has) : _Utils_Tuple2(
+							A2($elm$core$List$cons, x, found),
+							A2($elm$core$Set$insert, 'described', has));
+					case 'Nearby':
+						var location = x.a;
+						var elem = x.b;
+						return _Utils_Tuple2(
+							A2($elm$core$List$cons, x, found),
+							has);
+					case 'AlignX':
+						return A2($elm$core$Set$member, 'align-x', has) ? _Utils_Tuple2(found, has) : _Utils_Tuple2(
+							A2($elm$core$List$cons, x, found),
+							A2($elm$core$Set$insert, 'align-x', has));
+					case 'AlignY':
+						return A2($elm$core$Set$member, 'align-y', has) ? _Utils_Tuple2(found, has) : _Utils_Tuple2(
+							A2($elm$core$List$cons, x, found),
+							A2($elm$core$Set$insert, 'align-y', has));
+					default:
+						return A2($elm$core$Set$member, 'transform', has) ? _Utils_Tuple2(found, has) : _Utils_Tuple2(
+							A2($elm$core$List$cons, x, found),
+							A2($elm$core$Set$insert, 'transform', has));
+				}
+			}),
+		_Utils_Tuple2(_List_Nil, $elm$core$Set$empty),
+		attrs).a;
+};
+var $mdgriffith$elm_ui$Internal$Model$get = F2(
+	function (attrs, isAttr) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, found) {
+					return isAttr(x) ? A2($elm$core$List$cons, x, found) : found;
+				}),
+			_List_Nil,
+			$mdgriffith$elm_ui$Internal$Model$filter(attrs));
+	});
+var $mdgriffith$elm_ui$Element$Input$leftArrow = 'ArrowLeft';
+var $mdgriffith$elm_ui$Element$Input$rightArrow = 'ArrowRight';
+var $mdgriffith$elm_ui$Element$Input$row = F2(
+	function (attributes, children) {
+		return A4(
+			$mdgriffith$elm_ui$Internal$Model$element,
+			$mdgriffith$elm_ui$Internal$Model$asRow,
+			$mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+				attributes),
+			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
+	});
+var $mdgriffith$elm_ui$Element$Input$tabindex = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Internal$Model$Attr, $elm$html$Html$Attributes$tabindex);
+var $mdgriffith$elm_ui$Element$Input$upArrow = 'ArrowUp';
+var $mdgriffith$elm_ui$Element$Input$radioHelper = F3(
+	function (orientation, attrs, input) {
+		var track = F2(
+			function (opt, _v14) {
+				var found = _v14.a;
+				var prev = _v14.b;
+				var nxt = _v14.c;
+				var val = opt.a;
+				switch (found.$) {
+					case 'NotFound':
+						return _Utils_eq(
+							$elm$core$Maybe$Just(val),
+							input.selected) ? _Utils_Tuple3($mdgriffith$elm_ui$Element$Input$BeforeFound, prev, nxt) : _Utils_Tuple3(found, val, nxt);
+					case 'BeforeFound':
+						return _Utils_Tuple3($mdgriffith$elm_ui$Element$Input$AfterFound, prev, val);
+					default:
+						return _Utils_Tuple3(found, prev, nxt);
+				}
+			});
+		var renderOption = function (_v11) {
+			var val = _v11.a;
+			var view = _v11.b;
+			var status = _Utils_eq(
+				$elm$core$Maybe$Just(val),
+				input.selected) ? $mdgriffith$elm_ui$Element$Input$Selected : $mdgriffith$elm_ui$Element$Input$Idle;
+			return A2(
+				$mdgriffith$elm_ui$Element$el,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$pointer,
+						function () {
+						if (orientation.$ === 'Row') {
+							return $mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink);
+						} else {
+							return $mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill);
+						}
+					}(),
+						$mdgriffith$elm_ui$Element$Events$onClick(
+						input.onChange(val)),
+						function () {
+						if (status.$ === 'Selected') {
+							return $mdgriffith$elm_ui$Internal$Model$Attr(
+								A2($elm$html$Html$Attributes$attribute, 'aria-checked', 'true'));
+						} else {
+							return $mdgriffith$elm_ui$Internal$Model$Attr(
+								A2($elm$html$Html$Attributes$attribute, 'aria-checked', 'false'));
+						}
+					}(),
+						$mdgriffith$elm_ui$Internal$Model$Attr(
+						A2($elm$html$Html$Attributes$attribute, 'role', 'radio'))
+					]),
+				view(status));
+		};
+		var prevNext = function () {
+			var _v5 = input.options;
+			if (!_v5.b) {
+				return $elm$core$Maybe$Nothing;
+			} else {
+				var _v6 = _v5.a;
+				var val = _v6.a;
+				return function (_v7) {
+					var found = _v7.a;
+					var b = _v7.b;
+					var a = _v7.c;
+					switch (found.$) {
+						case 'NotFound':
+							return $elm$core$Maybe$Just(
+								_Utils_Tuple2(b, val));
+						case 'BeforeFound':
+							return $elm$core$Maybe$Just(
+								_Utils_Tuple2(b, val));
+						default:
+							return $elm$core$Maybe$Just(
+								_Utils_Tuple2(b, a));
+					}
+				}(
+					A3(
+						$elm$core$List$foldl,
+						track,
+						_Utils_Tuple3($mdgriffith$elm_ui$Element$Input$NotFound, val, val),
+						input.options));
+			}
+		}();
+		var optionArea = function () {
+			if (orientation.$ === 'Row') {
+				return A2(
+					$mdgriffith$elm_ui$Element$Input$row,
+					A2(
+						$elm$core$List$cons,
+						$mdgriffith$elm_ui$Element$Input$hiddenLabelAttribute(input.label),
+						attrs),
+					A2($elm$core$List$map, renderOption, input.options));
+			} else {
+				return A2(
+					$mdgriffith$elm_ui$Element$Input$column,
+					A2(
+						$elm$core$List$cons,
+						$mdgriffith$elm_ui$Element$Input$hiddenLabelAttribute(input.label),
+						attrs),
+					A2($elm$core$List$map, renderOption, input.options));
+			}
+		}();
+		var events = A2(
+			$mdgriffith$elm_ui$Internal$Model$get,
+			attrs,
+			function (attr) {
+				_v3$3:
+				while (true) {
+					switch (attr.$) {
+						case 'Width':
+							if (attr.a.$ === 'Fill') {
+								return true;
+							} else {
+								break _v3$3;
+							}
+						case 'Height':
+							if (attr.a.$ === 'Fill') {
+								return true;
+							} else {
+								break _v3$3;
+							}
+						case 'Attr':
+							return true;
+						default:
+							break _v3$3;
+					}
+				}
+				return false;
+			});
+		return A3(
+			$mdgriffith$elm_ui$Element$Input$applyLabel,
+			_Utils_ap(
+				A2(
+					$elm$core$List$filterMap,
+					$elm$core$Basics$identity,
+					_List_fromArray(
+						[
+							$elm$core$Maybe$Just($mdgriffith$elm_ui$Element$alignLeft),
+							$elm$core$Maybe$Just(
+							$mdgriffith$elm_ui$Element$Input$tabindex(0)),
+							$elm$core$Maybe$Just(
+							$mdgriffith$elm_ui$Internal$Model$htmlClass('focus')),
+							$elm$core$Maybe$Just($mdgriffith$elm_ui$Element$Region$announce),
+							$elm$core$Maybe$Just(
+							$mdgriffith$elm_ui$Internal$Model$Attr(
+								A2($elm$html$Html$Attributes$attribute, 'role', 'radiogroup'))),
+							function () {
+							if (prevNext.$ === 'Nothing') {
+								return $elm$core$Maybe$Nothing;
+							} else {
+								var _v1 = prevNext.a;
+								var prev = _v1.a;
+								var next = _v1.b;
+								return $elm$core$Maybe$Just(
+									$mdgriffith$elm_ui$Element$Input$onKeyLookup(
+										function (code) {
+											if (_Utils_eq(code, $mdgriffith$elm_ui$Element$Input$leftArrow)) {
+												return $elm$core$Maybe$Just(
+													input.onChange(prev));
+											} else {
+												if (_Utils_eq(code, $mdgriffith$elm_ui$Element$Input$upArrow)) {
+													return $elm$core$Maybe$Just(
+														input.onChange(prev));
+												} else {
+													if (_Utils_eq(code, $mdgriffith$elm_ui$Element$Input$rightArrow)) {
+														return $elm$core$Maybe$Just(
+															input.onChange(next));
+													} else {
+														if (_Utils_eq(code, $mdgriffith$elm_ui$Element$Input$downArrow)) {
+															return $elm$core$Maybe$Just(
+																input.onChange(next));
+														} else {
+															if (_Utils_eq(code, $mdgriffith$elm_ui$Element$Input$space)) {
+																var _v2 = input.selected;
+																if (_v2.$ === 'Nothing') {
+																	return $elm$core$Maybe$Just(
+																		input.onChange(prev));
+																} else {
+																	return $elm$core$Maybe$Nothing;
+																}
+															} else {
+																return $elm$core$Maybe$Nothing;
+															}
+														}
+													}
+												}
+											}
+										}));
+							}
+						}()
+						])),
+				events),
+			input.label,
+			optionArea);
+	});
+var $mdgriffith$elm_ui$Element$Input$radioRow = $mdgriffith$elm_ui$Element$Input$radioHelper($mdgriffith$elm_ui$Element$Input$Row);
 var $author$project$UI$secondaryButton = $mdgriffith$elm_ui$Element$Input$button(
 	_List_fromArray(
 		[
@@ -15977,9 +16379,6 @@ var $elm$html$Html$Attributes$step = function (n) {
 	return A2($elm$html$Html$Attributes$stringProperty, 'step', n);
 };
 var $mdgriffith$elm_ui$Element$fillPortion = $mdgriffith$elm_ui$Internal$Model$Fill;
-var $mdgriffith$elm_ui$Internal$Model$AlignX = function (a) {
-	return {$: 'AlignX', a: a};
-};
 var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var $mdgriffith$elm_ui$Internal$Model$map = F2(
 	function (fn, el) {
@@ -17063,6 +17462,37 @@ var $author$project$Main$view = function (model) {
 											placeholder: $elm$core$Maybe$Nothing,
 											spellcheck: false,
 											text: model.inputCsv
+										}),
+										A2(
+										$mdgriffith$elm_ui$Element$Input$radioRow,
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$spacing(16)
+											]),
+										{
+											label: A2(
+												$mdgriffith$elm_ui$Element$Input$labelLeft,
+												_List_fromArray(
+													[
+														$mdgriffith$elm_ui$Element$paddingEach(
+														{bottom: 0, left: 0, right: 20, top: 0})
+													]),
+												$mdgriffith$elm_ui$Element$text('CSV Separator')),
+											onChange: function (_new) {
+												return $author$project$Main$CsvSeparatorChanged(_new);
+											},
+											options: _List_fromArray(
+												[
+													A2(
+													$mdgriffith$elm_ui$Element$Input$option,
+													',',
+													$mdgriffith$elm_ui$Element$text(',')),
+													A2(
+													$mdgriffith$elm_ui$Element$Input$option,
+													';',
+													$mdgriffith$elm_ui$Element$text(';'))
+												]),
+											selected: $elm$core$Maybe$Just(model.csvSeparator)
 										}),
 										function () {
 										var _v1 = model.parseCsvError;
