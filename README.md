@@ -78,6 +78,22 @@ print page functionality (best results in landscape format).
 |[Example Routes Output PDF](docs/example-routes-output.pdf)|
 |:---------------------------------------------------------:|
 
+## Development
+
+Dev server:
+
+```bash
+make dev
+```
+
+Build `main.js` with:
+
+```bash
+make build
+```
+
+
+
 ## Known Issues
 
 - The state is lost on reload
