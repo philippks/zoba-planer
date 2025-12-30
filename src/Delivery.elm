@@ -4,7 +4,6 @@ import Array
 import Csv
 import Dict exposing (Dict)
 import KMeans
-import Result.Extra
 import Set
 
 
@@ -56,16 +55,11 @@ setDeliveryCoordinates id coordinates deliveries =
 
 deliveriesCoordinates : List Delivery -> List ( Int, Coordinates )
 deliveriesCoordinates deliveries =
-    List.foldl
-        (\delivery acc ->
-            case deliveryCoordinates delivery of
-                Just coordinates ->
-                    ( delivery.id, coordinates ) :: acc
-
-                Nothing ->
-                    acc
+    List.filterMap
+        (\delivery ->
+            deliveryCoordinates delivery
+                |> Maybe.map (\coordinates -> ( delivery.id, coordinates ))
         )
-        []
         deliveries
 
 
@@ -223,39 +217,30 @@ decodeCsvToDeliveries separator rawCsv =
 
         deliveries =
             List.indexedMap (decodeCsvRecordToDelivery csv.headers) csv.records
+
+        errors =
+            deliveries
+                |> List.filterMap
+                    (\deliveryResult ->
+                        case deliveryResult of
+                            Ok _ ->
+                                Nothing
+
+                            Err error ->
+                                Just error
+                    )
     in
-    if List.any Result.Extra.isErr deliveries then
+    if not (List.isEmpty errors) then
         Err
             (String.join
                 "\n"
-                (List.foldl
-                    (\deliveryResult acc ->
-                        case deliveryResult of
-                            Ok _ ->
-                                acc
-
-                            Err error ->
-                                error :: acc
-                    )
-                    []
-                    deliveries
-                )
+                errors
             )
 
     else
         Ok
             ( csv.headers
-            , List.foldl
-                (\deliveryResult acc ->
-                    case deliveryResult of
-                        Ok delivery ->
-                            delivery :: acc
-
-                        Err _ ->
-                            acc
-                )
-                []
-                deliveries
+            , List.filterMap Result.toMaybe deliveries
             )
 
 

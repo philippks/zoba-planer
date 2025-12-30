@@ -804,45 +804,45 @@ coordinatesLink coordinates =
 viewRoutes : List String -> Deliveries -> Html Msg
 viewRoutes headers deliveries =
     div [ class "page-wrap" ]
-        (List.map
-            (\slot ->
-                let
-                    deliveriesOfCurrentSlot =
-                        deliveriesOfSlot slot deliveries
-                in
-                div []
-                    (List.map
-                        (\cluster ->
-                            let
-                                title =
-                                    "Lieferzeit " ++ slot ++ ", Fahrer: " ++ String.fromInt (cluster + 1)
+        (slotsOfDeliveries deliveries
+            |> List.map
+                (\slot ->
+                    let
+                        deliveriesOfCurrentSlot =
+                            deliveriesOfSlot slot deliveries
+                    in
+                    div []
+                        (clustersOfDeliveries deliveriesOfCurrentSlot
+                            |> List.map
+                                (\cluster ->
+                                    let
+                                        title =
+                                            "Lieferzeit " ++ slot ++ ", Fahrer: " ++ String.fromInt (cluster + 1)
 
-                                mapId =
-                                    "map-" ++ String.replace " " "" slot ++ "-cluster-" ++ String.fromInt cluster
+                                        mapId =
+                                            "map-" ++ String.replace " " "" slot ++ "-cluster-" ++ String.fromInt cluster
 
-                                deliveriesOfCurrentCluster =
-                                    deliveriesOfCluster cluster deliveriesOfCurrentSlot
-                            in
-                            div []
-                                [ div []
-                                    [ layout [] <|
-                                        column []
-                                            [ el [ width fill, Element.Region.heading 1, Font.size 18 ] (text title)
-                                            , el [ htmlAttribute <| id mapId, htmlAttribute <| class "route-map-container", width <| px 1200, height <| px 450 ] (text "Render map here")
+                                        deliveriesOfCurrentCluster =
+                                            deliveriesOfCluster cluster deliveriesOfCurrentSlot
+                                    in
+                                    div []
+                                        [ div []
+                                            [ layout [] <|
+                                                column []
+                                                    [ el [ width fill, Element.Region.heading 1, Font.size 18 ] (text title)
+                                                    , el [ htmlAttribute <| id mapId, htmlAttribute <| class "route-map-container", width <| px 1200, height <| px 450 ] (text "Render map here")
+                                                    ]
                                             ]
-                                    ]
-                                , div [ class "page-break" ]
-                                    [ layout [] <|
-                                        column [ padding 2, spacing 8, width fill, height fill ]
-                                            [ viewRouteDeliveriesTable headers deliveriesOfCurrentCluster
+                                        , div [ class "page-break" ]
+                                            [ layout [] <|
+                                                column [ padding 2, spacing 8, width fill, height fill ]
+                                                    [ viewRouteDeliveriesTable headers deliveriesOfCurrentCluster
+                                                    ]
                                             ]
-                                    ]
-                                ]
+                                        ]
+                                )
                         )
-                        (clustersOfDeliveries deliveriesOfCurrentSlot)
-                    )
-            )
-            (slotsOfDeliveries deliveries)
+                )
         )
 
 
