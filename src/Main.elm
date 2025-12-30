@@ -3,7 +3,7 @@ port module Main exposing (..)
 import Browser
 import Delivery exposing (..)
 import Dict exposing (Dict)
-import Element exposing (Element, column, el, fill, height, htmlAttribute, layout, padding, paddingEach, paragraph, px, rgb, row, shrink, spacing, spacingXY, text, width)
+import Element exposing (Element, column, el, fill, height, htmlAttribute, layout, maximum, padding, paddingEach, paragraph, px, rgb, row, shrink, spacing, spacingXY, text, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
@@ -860,7 +860,8 @@ viewRouteDeliveriesTable headers deliveries =
         tableValue : String -> Element Msg
         tableValue value =
             paragraph
-                [ Font.size 12
+                [ width (shrink |> maximum 300)
+                , Font.size 12
                 ]
                 [ text value ]
     in
