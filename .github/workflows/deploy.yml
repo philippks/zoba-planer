@@ -26,17 +26,10 @@ jobs:
         run: npm install -g elm
       - name: Build Elm
         run: elm make src/Main.elm --output=main.js
-      - name: Prepare dist directory
-        run: |
-          mkdir -p dist
-          cp index.html dist/
-          cp main.js dist/
-          cp styles.css dist/
-          cp init.js dist/
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: .
 
   deploy:
     needs: build

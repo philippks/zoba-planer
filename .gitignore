@@ -4,4 +4,3 @@ elm-stuff
 repl-temp-*
 # build artifacts
 main.js
-dist/
