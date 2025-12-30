@@ -1,4 +1,4 @@
-port module Main exposing (..)
+port module App exposing (..)
 
 import Browser
 import Delivery exposing (..)
