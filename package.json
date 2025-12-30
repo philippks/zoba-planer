@@ -2,7 +2,6 @@
   "name": "zoba-planer",
   "version": "1.0.0",
   "description": "This web application, written in Elm, simplifies the process of planning delivery routes. It was initially developed for [Cevi Hombi](https://cevi-hombi.ch/), an organization that organizes an annual event around Christmas where customers can order homemade [Zopf](https://en.wikipedia.org/wiki/Zopf) to be delivered.",
-  "main": "init.js",
   "directories": {
     "doc": "docs",
     "test": "tests"

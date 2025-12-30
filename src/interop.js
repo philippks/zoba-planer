@@ -1,7 +1,14 @@
 // This returns the flags passed into your Elm application
 export const flags = async ({ env }) => {
   const cachedCoordinatesJson = localStorage.getItem("cachedCoordinates");
-  const cachedCoordinates = cachedCoordinatesJson ? JSON.parse(cachedCoordinatesJson) : [];
+  let cachedCoordinates = [];
+  
+  try {
+    cachedCoordinates = cachedCoordinatesJson ? JSON.parse(cachedCoordinatesJson) : [];
+  } catch (error) {
+    console.warn("Failed to parse cached coordinates from localStorage:", error);
+    cachedCoordinates = [];
+  }
   
   return {
     cachedCoordinates: cachedCoordinates
@@ -25,6 +32,8 @@ export const onReady = ({ app, env }) => {
 
   if (app.ports && app.ports.initMap) {
     app.ports.initMap.subscribe(function (headquarter) {
+      // Small delay to ensure DOM element is available
+      // Leaflet needs the target div to exist in the DOM before initialization
       setTimeout(function () {
         map = L.map("map", { scrollWheelZoom: false }).setView([headquarter.latitude, headquarter.longitude], 17);
         L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -78,6 +87,7 @@ export const onReady = ({ app, env }) => {
         slotClusterMap.fitBounds(markersGroup.getBounds().pad(0.1));
       };
 
+      // Small delay to ensure DOM elements are available for multiple maps
       setTimeout(function () {
         deliveriesByClusterAndSlot.map((slotDeliveries) => {
           const slot = slotDeliveries[0];
