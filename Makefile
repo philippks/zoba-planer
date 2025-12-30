@@ -1,7 +1,7 @@
 .PHONY: build dev
 
 build:
-	elm make src/Main.elm --output=main.js
+	npx elm-land build
 
 dev:
-	elm-live src/Main.elm --hot -- --output=main.js
+	npx elm-land server

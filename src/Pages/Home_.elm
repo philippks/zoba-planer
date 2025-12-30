@@ -1,17 +1,21 @@
 module Pages.Home_ exposing (Model, Msg, page)
 
+import App
+import Dict
 import Effect exposing (Effect)
-import Route exposing (Route)
 import Html
 import Page exposing (Page)
+import Ports
+import Route exposing (Route)
 import Shared
+import Time
 import View exposing (View)
 
 
 page : Shared.Model -> Route () -> Page Model Msg
 page shared route =
     Page.new
-        { init = init
+        { init = init shared
         , update = update
         , subscriptions = subscriptions
         , view = view
@@ -23,13 +27,17 @@ page shared route =
 
 
 type alias Model =
-    {}
+    App.Model
 
 
-init : () -> ( Model, Effect Msg )
-init () =
-    ( {}
-    , Effect.none
+init : Shared.Model -> () -> ( Model, Effect Msg )
+init shared () =
+    let
+        ( appModel, appCmd ) =
+            App.init (Dict.toList shared.cachedCoordinates)
+    in
+    ( appModel
+    , Effect.sendCmd (Cmd.map AppMsg appCmd)
     )
 
 
@@ -38,15 +46,19 @@ init () =
 
 
 type Msg
-    = NoOp
+    = AppMsg App.Msg
 
 
 update : Msg -> Model -> ( Model, Effect Msg )
 update msg model =
     case msg of
-        NoOp ->
-            ( model
-            , Effect.none
+        AppMsg appMsg ->
+            let
+                ( newModel, appCmd ) =
+                    App.update appMsg model
+            in
+            ( newModel
+            , Effect.sendCmd (Cmd.map AppMsg appCmd)
             )
 
 
@@ -56,7 +68,7 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    Sub.map AppMsg (App.subscriptions model)
 
 
 
@@ -65,6 +77,6 @@ subscriptions model =
 
 view : Model -> View Msg
 view model =
-    { title = "Pages.Home_"
-    , body = [ Html.text "/" ]
+    { title = "Zoba Routenplaner"
+    , body = [ Html.map AppMsg (App.view model) ]
     }

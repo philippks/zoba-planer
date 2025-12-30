@@ -1,6 +1,5 @@
-port module App exposing (..)
+module App exposing (Model, Msg, init, update, subscriptions, view, Progress(..))
 
-import Browser
 import Delivery exposing (..)
 import Dict exposing (Dict)
 import Element exposing (Element, column, el, fill, height, htmlAttribute, layout, maximum, padding, paddingEach, paragraph, px, rgb, row, shrink, spacing, spacingXY, text, width)
@@ -14,18 +13,9 @@ import File.Download
 import Html exposing (Html, div)
 import Html.Attributes exposing (class, id)
 import Osm exposing (OsmQueryResult, houseCoordinatesFromOsmResponse, queryOsm)
+import Ports
 import Time
 import UI exposing (info, primaryButton, secondaryButton, warning)
-
-
-main : Program (List ( String, ( String, Coordinates ) )) Model Msg
-main =
-    Browser.element
-        { init = init
-        , update = update
-        , subscriptions = subscriptions
-        , view = view
-        }
 
 
 type alias Model =
@@ -123,30 +113,8 @@ subscriptions : Model -> Sub Msg
 subscriptions _ =
     Sub.batch
         [ Time.every 2000 Tick
-        , markerClicked MarkerClicked
+        , Ports.markerClicked MarkerClicked
         ]
-
-
-
--- PORTS
-
-
-port setCachedCoordinates : List ( String, ( String, Coordinates ) ) -> Cmd msg
-
-
-port initMap : Coordinates -> Cmd msg
-
-
-port clearMap : () -> Cmd msg
-
-
-port initRenderRouteMaps : ( Coordinates, CoordinatesByClusterAndSlot ) -> Cmd msg
-
-
-port addMarkers : ( String, Coordinates, List ( Int, Coordinates, Int ) ) -> Cmd msg
-
-
-port markerClicked : (Int -> msg) -> Sub msg
 
 
 
@@ -242,7 +210,7 @@ update msg model =
                 | deliveries = updatedDeliveries
                 , cachedCoordinates = updatedCachedCoordinates
               }
-            , setCachedCoordinates (Dict.toList updatedCachedCoordinates)
+            , Ports.setCachedCoordinates (Dict.toList updatedCachedCoordinates)
             )
 
         DeliveryChanged ( id, key, value ) ->
@@ -274,7 +242,7 @@ update msg model =
                 | deliveries = updatedDeliveries
                 , cachedCoordinates = updatedCachedCoordinates
               }
-            , setCachedCoordinates (Dict.toList updatedCachedCoordinates)
+            , Ports.setCachedCoordinates (Dict.toList updatedCachedCoordinates)
             )
 
         CancelSetCoordinatesManually delivery ->
@@ -289,7 +257,7 @@ update msg model =
                 | deliveries = updatedDeliveries
                 , cachedCoordinates = updatedCachedCoordinates
               }
-            , setCachedCoordinates (Dict.toList updatedCachedCoordinates)
+            , Ports.setCachedCoordinates (Dict.toList updatedCachedCoordinates)
             )
 
         Tick _ ->
@@ -329,7 +297,7 @@ update msg model =
                     )
 
         StartClustering ->
-            ( { model | progress = ClusterDeliveries Nothing, deliveries = clusterDeliveries model.drivers model.deliveries }, initMap model.headquarterCoordinates )
+            ( { model | progress = ClusterDeliveries Nothing, deliveries = clusterDeliveries model.drivers model.deliveries }, Ports.initMap model.headquarterCoordinates )
 
         SlotButtonClicked slot ->
             update
@@ -344,10 +312,10 @@ update msg model =
             ( { model | progress = progress }
             , case progress of
                 ClusterDeliveries _ ->
-                    initMap model.headquarterCoordinates
+                    Ports.initMap model.headquarterCoordinates
 
                 _ ->
-                    clearMap ()
+                    Ports.clearMap ()
             )
 
         AddMarkers ( mode, deliveries ) ->
@@ -373,7 +341,7 @@ update msg model =
                         UpdateMarkers ->
                             "update"
             in
-            ( model, addMarkers ( modeString, model.headquarterCoordinates, deliveriesCoordinatesWithCluster ) )
+            ( model, Ports.addMarkers ( modeString, model.headquarterCoordinates, deliveriesCoordinatesWithCluster ) )
 
         MarkerClicked id ->
             -- if a marker was clicked, change the cluster of the corresponding
@@ -433,7 +401,7 @@ update msg model =
                                 ( slot, deliveriesOfSlotByCluster slot model.deliveries )
                             )
             in
-            ( { model | progress = RenderRoutes model.deliveries }, initRenderRouteMaps ( model.headquarterCoordinates, coordinatesByClustersAndSlots ) )
+            ( { model | progress = RenderRoutes model.deliveries }, Ports.initRenderRouteMaps ( model.headquarterCoordinates, coordinatesByClustersAndSlots ) )
 
 
 deliveryCacheKey : Delivery -> String

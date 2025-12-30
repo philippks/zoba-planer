@@ -8,6 +8,8 @@
     "test": "tests"
   },
   "scripts": {
+    "dev": "elm-land server",
+    "build": "elm-land build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
