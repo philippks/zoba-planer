@@ -1,6 +1,6 @@
 # Delivery Route Planner
 
-This web application, written in Elm, simplifies the process of planning
+This web application, written in Elm using [Elm Land](https://elm.land/), simplifies the process of planning
 delivery routes. It was initially developed for [Cevi Hombi](https://cevi-hombi.ch/),
 an organization that organizes an annual event around Christmas where customers
 can order homemade [Zopf](https://en.wikipedia.org/wiki/Zopf) to be delivered.
@@ -80,17 +80,44 @@ print page functionality (best results in landscape format).
 
 ## Development
 
-Dev server:
+This project uses [Elm Land](https://elm.land/), a framework for building Elm applications with excellent developer experience.
+
+### Requirements
+
+- Node.js (version specified in .nvmrc)
+- npm
+
+### Setup
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+### Development Server
+
+Run the development server with hot reloading:
 
 ```bash
 make dev
+# or
+npm run dev
 ```
 
-Build `main.js` with:
+The app will be available at `http://localhost:1234`
+
+### Build for Production
+
+Build the optimized production version:
 
 ```bash
 make build
+# or
+npm run build
 ```
+
+The built files will be in the `dist/` directory.
 
 
 

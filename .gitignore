@@ -4,7 +4,11 @@ elm-stuff
 repl-temp-*
 # build artifacts
 main.js
+dist
 # node modules
 node_modules
 # elm-land generated files
 .elm-land
+# old files (pre-elm-land migration)
+index.html
+init.js
