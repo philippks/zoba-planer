@@ -33,6 +33,11 @@ type alias Coordinates =
     }
 
 
+minDeliveriesPerCluster : Int
+minDeliveriesPerCluster =
+    4
+
+
 streetKey : String
 streetKey =
     "Strasse"
@@ -276,10 +281,16 @@ clusterDeliveries nClusters deliveries =
 
 
 clusterSlot : Int -> String -> Deliveries -> Deliveries
-clusterSlot nClusters slot deliveries =
+clusterSlot maxClusters slot deliveries =
     let
+        deliveriesToCluster =
+            deliveriesOfSlot slot deliveries
+
+        nClusters =
+            clamp 1 maxClusters (List.length deliveriesToCluster // minDeliveriesPerCluster)
+
         clusteredDeliveries =
-            KMeans.clusterBy toVector nClusters (deliveriesOfSlot slot deliveries)
+            KMeans.clusterBy toVector nClusters deliveriesToCluster
 
         toVector : Delivery -> List Float
         toVector delivery =
